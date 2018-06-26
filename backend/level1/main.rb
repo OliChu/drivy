@@ -14,12 +14,12 @@ prices = {}
 # SETTING PRICES
 rentals.each do |rental|
   number_of_days = (DateTime.strptime(rental['end_date'], '%Y-%m-%d') - DateTime.strptime(rental['start_date'], '%Y-%m-%d') + 1).to_i
-  car = cars.detect{ |car| car['id'] == rental['id'] }
+  car = cars.detect{ |car| car['id'] == rental['car_id'] }
   price = (number_of_days * car['price_per_day'].to_i) + (rental['distance'].to_i * car['price_per_km'].to_i)
   if prices['rentals'].nil?
-    prices['rentals'] = [{ id: car['id'], price: price }]
+    prices['rentals'] = [{ id: rental['id'], price: price }]
   else
-    prices['rentals'] << { id: car['id'], price: price }
+    prices['rentals'] << { id: rental['id'], price: price }
   end
 end
 
