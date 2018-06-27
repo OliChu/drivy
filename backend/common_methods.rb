@@ -70,25 +70,42 @@ def calcul_commission_fees(price, number_of_days)
   }
 end
 
-def generate_actions(price, commission, options: nil)
+def generate_actions(price, commission, options: price_for_options)
   actions = [
     {
       "who": "driver",
       "type": "debit",
-      "amount": price
+      "amount": options.nil? ? price : (price + options['driver']).to_i
     },
     {
       "who": "owner",
       "type": "credit",
-      "amount": (price * (1 - COMMISSION_RATE)).to_i
+      "amount": options.nil? ? (price * (1 - COMMISSION_RATE)).to_i : (price * (1 - COMMISSION_RATE)).to_i + options['owner']
     }]
   commission.each do |type, amount|
     action = {
       "who": type.to_s.gsub('_fee', ''),
       "type": "credit",
-      "amount": amount
+      "amount": options.nil? ? amount : amount + options[type.to_s.gsub('_fee', '')].to_i
     }
     actions << action
   end
   actions
+end
+
+def calcul_options_price(rental_options, number_of_days)
+  price_for_options = { 'drivy' => 0, 'owner' => 0 , 'driver' => 0 }
+  rental_options.each do |option|
+    if option['type'] == 'gps'
+      price_for_options['owner'] += number_of_days * 500
+      price_for_options['driver'] += number_of_days * 500
+    elsif option['type'] == 'baby_seat'
+      price_for_options['owner'] += number_of_days * 200
+      price_for_options['driver'] += number_of_days * 200
+    else
+      price_for_options['drivy'] += number_of_days * 1000
+      price_for_options['driver'] += number_of_days * 1000
+    end
+  end
+  price_for_options
 end

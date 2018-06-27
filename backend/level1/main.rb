@@ -17,7 +17,7 @@ unless input.nil?
     price = calcul_rental_price(number_of_days, car['price_per_day'], rental['distance'], car['price_per_km'], false) unless car.nil?
 
     if number_of_days < 0 || car.nil?
-      puts "Incorrect unput data for rental id:#{rental['id']}"
+      puts "Incorrect input data for rental id:#{rental['id']}"
     else
       output['rentals'] << { id: rental['id'], price: price }
     end

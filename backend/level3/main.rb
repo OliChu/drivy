@@ -21,7 +21,7 @@ unless input.nil?
     end
 
     if number_of_days < 0 || car.nil?
-      puts "Incorrect unput data for rental id:#{rental['id']}"
+      puts "Incorrect input data for rental id:#{rental['id']}"
     else
       output['rentals'] << { id: rental['id'], price: price, commission: commission }
     end
