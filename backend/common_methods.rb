@@ -1,6 +1,11 @@
 require 'json'
 require 'date'
 
+# DECLARE CONSTANTS
+WEIGHT_1 = 0.10
+WEIGHT_2 = 0.30
+WEIGHT_3 = 0.50
+
 def load_data_from_json(filepath)
   begin
     serialized_input = File.read(filepath)
@@ -27,11 +32,11 @@ end
 def weighting_coefficient(number_of_days)
   coefficient = 1
   if 1 < number_of_days && number_of_days <= 4
-    coefficient -= 0.10
+    coefficient -= WEIGHT_1
   elsif 4 < number_of_days && number_of_days <= 10
-    coefficient -= 0.30
+    coefficient -= WEIGHT_2
   elsif number_of_days > 10
-    coefficient -= 0.5
+    coefficient -= WEIGHT_3
   end
   return coefficient
 end
@@ -39,5 +44,5 @@ end
 def calcul_rental_price(number_of_days, price_per_day, distance, price_per_km)
   price_total_days = (1..number_of_days).to_a.reduce(0){ |sum, day| sum + price_per_day * weighting_coefficient(day) }
   price_for_km = distance * price_per_km
-  price_total_days + price_for_km
+  (price_total_days + price_for_km).to_i
 end
