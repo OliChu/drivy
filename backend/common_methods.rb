@@ -1,10 +1,19 @@
 require 'json'
 require 'date'
 
-# DECLARE CONSTANTS
+# DECLARING KM WEIGHTING CONSTANTS
 WEIGHT_1 = 0.10
 WEIGHT_2 = 0.30
 WEIGHT_3 = 0.50
+
+# DECLARING COMMISION RATES
+COMMISSION_RATE  = 0.30
+INSURANCE_RATE   = 0.50
+ASSISTANCE_PRICE = 100
+
+#####################
+# DECLARING METHODS #
+#####################
 
 def load_data_from_json(filepath)
   begin
@@ -47,4 +56,16 @@ def calcul_rental_price(number_of_days, price_per_day, distance, price_per_km, w
   end
   price_for_km = distance * price_per_km
   (price_total_days + price_for_km).to_i
+end
+
+def calcul_commission_fees(price, number_of_days)
+  commission = (price * COMMISSION_RATE).to_i
+  insurance_fee = (commission * INSURANCE_RATE).to_i
+  assistance_fee = ASSISTANCE_PRICE * number_of_days
+  drivy_fee = commission - (insurance_fee + assistance_fee)
+  {
+    "insurance_fee": insurance_fee,
+    "assistance_fee": assistance_fee,
+    "drivy_fee": drivy_fee
+  }
 end
