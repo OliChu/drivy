@@ -14,7 +14,7 @@ unless input.nil?
   rentals.each do |rental|
     number_of_days = calculate_rental_days(rental['start_date'], rental['end_date'])
     car = cars.detect{ |car| car['id'] == rental['car_id'] }
-    price = (number_of_days * car['price_per_day'].to_i) + (rental['distance'].to_i * car['price_per_km'].to_i)
+    price = calcul_rental_price(number_of_days, car['price_per_day'], rental['distance'], car['price_per_km'], false) unless car.nil?
 
     if number_of_days < 0 || car.nil? || price < 0
       puts "Incorrect unput data for rental id:#{rental['id']}"

@@ -41,8 +41,10 @@ def weighting_coefficient(number_of_days)
   return coefficient
 end
 
-def calcul_rental_price(number_of_days, price_per_day, distance, price_per_km)
-  price_total_days = (1..number_of_days).to_a.reduce(0){ |sum, day| sum + price_per_day * weighting_coefficient(day) }
+def calcul_rental_price(number_of_days, price_per_day, distance, price_per_km, weighting)
+  price_total_days = (1..number_of_days).to_a.reduce(0) do |sum, day|
+    weighting ? sum + price_per_day * weighting_coefficient(day) : sum + price_per_day
+  end
   price_for_km = distance * price_per_km
   (price_total_days + price_for_km).to_i
 end
