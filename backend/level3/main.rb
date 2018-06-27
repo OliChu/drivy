@@ -20,7 +20,7 @@ unless input.nil?
       commission = calcul_commission_fees(price, number_of_days)
     end
 
-    if number_of_days < 0 || car.nil? || price < 0
+    if number_of_days < 0 || car.nil?
       puts "Incorrect unput data for rental id:#{rental['id']}"
     else
       output['rentals'] << { id: rental['id'], price: price, commission: commission }

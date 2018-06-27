@@ -21,7 +21,11 @@ unless input.nil?
       actions = generate_actions(price, commission, options: nil)
     end
 
-    output['rentals'] << { id: rental['id'], actions: actions }
+    if number_of_days < 0 || car.nil?
+      puts "Incorrect unput data for rental id:#{rental['id']}"
+    else
+      output['rentals'] << { id: rental['id'], actions: actions }
+    end
   end
 
   # WRITE JSON
