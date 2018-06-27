@@ -1,30 +1,29 @@
-require 'json'
-require 'date'
+require '../common_methods'
 
 # OPEN JSON AND PARSE
-filepath = 'data/input.json'
-serialized_input = File.read(filepath)
-input = JSON.parse(serialized_input)
+input_filepath = 'data/input.json'
+input = load_data_from_json(input_filepath)
 
-# CREATE VARIABLES
-cars = input['cars']
-rentals = input['rentals']
-prices = {}
+unless input.nil?
+  # CREATE VARIABLES
+  cars = input['cars']
+  rentals = input['rentals']
+  output = { 'rentals' => [] }
 
-# SETTING PRICES
-rentals.each do |rental|
-  number_of_days = (DateTime.strptime(rental['end_date'], '%Y-%m-%d') - DateTime.strptime(rental['start_date'], '%Y-%m-%d') + 1).to_i
-  car = cars.detect{ |car| car['id'] == rental['car_id'] }
-  price = (number_of_days * car['price_per_day'].to_i) + (rental['distance'].to_i * car['price_per_km'].to_i)
-  if prices['rentals'].nil?
-    prices['rentals'] = [{ id: rental['id'], price: price }]
-  else
-    prices['rentals'] << { id: rental['id'], price: price }
+  # SETTING PRICES
+  rentals.each do |rental|
+    number_of_days = calculate_rental_days(rental['start_date'], rental['end_date'])
+    car = cars.detect{ |car| car['id'] == rental['car_id'] }
+    price = (number_of_days * car['price_per_day'].to_i) + (rental['distance'].to_i * car['price_per_km'].to_i)
+
+    if number_of_days < 0 || car.nil? || price < 0
+      puts "Incorrect unput data for rental id:#{rental['id']}"
+    else
+      output['rentals'] << { id: rental['id'], price: price }
+    end
   end
-end
 
-# WRITE JSON
-output_filepath = 'data/output.json'
-File.open(output_filepath, 'wb') do |file|
-  file.write(JSON.pretty_generate(prices))
+  # WRITE JSON
+  output_filepath = 'data/output.json'
+  write_data_to_json(output_filepath, output)
 end
