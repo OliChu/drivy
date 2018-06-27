@@ -69,3 +69,26 @@ def calcul_commission_fees(price, number_of_days)
     "drivy_fee": drivy_fee
   }
 end
+
+def generate_actions(price, commission, options: nil)
+  actions = [
+    {
+      "who": "driver",
+      "type": "debit",
+      "amount": price
+    },
+    {
+      "who": "owner",
+      "type": "credit",
+      "amount": (price * (1 - COMMISSION_RATE)).to_i
+    }]
+  commission.each do |type, amount|
+    action = {
+      "who": type.to_s.gsub('_fee', ''),
+      "type": "credit",
+      "amount": amount
+    }
+    actions << action
+  end
+  actions
+end
